@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {"supportedSmartCards", "smartCardReaders", "locale", "externalPinCache", "timedInteraction", "cacheThreshold", "user-interface"})
+@XmlType(propOrder = {"supportedSmartCards", "smartCardReaders", "locale", "externalPinCache", "timedInteraction", "cacheThreshold", "userInterface"})
 public class Configuration {
     @XmlJavaTypeAdapter(POReIDSupportedSmarCardsMapAdapter.class)
     @XmlElement(name = "poreid-supported-smartcards", required = true)
