@@ -256,6 +256,6 @@ public class POReIDConfig {
     }
 
     public static boolean isUserInterfaceEnabled() {
-        return config.isUserInterfaceEnabled();
+        return getConfig().isUserInterfaceEnabled();
     }
 }
