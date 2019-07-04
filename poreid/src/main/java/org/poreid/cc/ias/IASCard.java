@@ -24,6 +24,7 @@
 
 package org.poreid.cc.ias;
 
+import org.poreid.dialogs.DialogException;
 import org.poreid.pcscforjava.Card;
 import org.poreid.pcscforjava.CardChannel;
 import org.poreid.pcscforjava.CardException;
@@ -126,7 +127,8 @@ public final class IASCard extends CitizenCard {
    
     
     @Override
-    public byte[] sign(byte hash[], byte[] pinCode, String digestAlgo, PkAlias pkAlias, RSAPaddingSchemes... sch) throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException {
+    public byte[] sign(byte hash[], byte[] pinCode, String digestAlgo, PkAlias pkAlias, RSAPaddingSchemes... sch)
+            throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException, DialogException {
         ResponseAPDU responseApdu;
         RSAPaddingSchemes scheme = sch.length > 0 && null != sch[0] ? sch[0] : RSAPaddingSchemes.PKCS1;
 

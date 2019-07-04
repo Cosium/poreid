@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {"supportedSmartCards", "smartCardReaders", "locale", "externalPinCache", "timedInteraction", "cacheThreshold"})
+@XmlType(propOrder = {"supportedSmartCards", "smartCardReaders", "locale", "externalPinCache", "timedInteraction", "cacheThreshold", "user-interface"})
 public class Configuration {
     @XmlJavaTypeAdapter(POReIDSupportedSmarCardsMapAdapter.class)
     @XmlElement(name = "poreid-supported-smartcards", required = true)
@@ -61,9 +61,12 @@ public class Configuration {
     private TimedInteraction timedInteraction;
     
     @XmlElement(name = "cache-threshold")
-    private int cacheThreshold; 
+    private int cacheThreshold;
 
-    
+    @XmlElement(name = "user-interface")
+    private boolean userInterface;
+
+
     public Map<String, POReIDSupportedSmartCardProperties> getSupportedSmartCards() {
         return supportedSmartCards;
     }
@@ -121,5 +124,15 @@ public class Configuration {
     
     public void setcacheThreshold(int cacheThreshold){
         this.cacheThreshold = cacheThreshold;
+    }
+
+
+    public boolean isUserInterfaceEnabled(){
+        return userInterface;
+    }
+
+
+    public void setUserInterfaceEnable(boolean userInterface){
+        this.userInterface = userInterface;
     }
 }

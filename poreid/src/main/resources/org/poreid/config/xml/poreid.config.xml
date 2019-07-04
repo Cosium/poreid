@@ -294,4 +294,5 @@
         <period>120</period>
     </timed-interaction>
     <cache-threshold>5</cache-threshold>
+    <user-interface>true</user-interface>
 </configuration>

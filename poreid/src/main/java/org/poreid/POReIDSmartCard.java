@@ -25,6 +25,7 @@ package org.poreid;
 
 import java.security.cert.X509Certificate;
 import java.util.List;
+import org.poreid.dialogs.DialogException;
 import org.poreid.dialogs.pindialogs.PinBlockedException;
 import org.poreid.dialogs.pindialogs.PinEntryCancelledException;
 import org.poreid.dialogs.pindialogs.PinTimeoutException;
@@ -47,8 +48,9 @@ public interface POReIDSmartCard extends SmartCardUIData, AutoCloseable {
      * @throws PinEntryCancelledException Exceção lançada quando o utilizador cancela a introdução do pin
      * @throws PinBlockedException Exceção lançada quando é detetado o bloqueio do pin
      * @throws POReIDException Exceção lançada quando ocorre uma exceção num componente (encapsula a exeção original)
+     * @throws DialogException Exceção lançada quando UI está desativada e é necessária uma interação com o usuário
      */
-    byte[] sign(byte hash[], byte[] pinCode, String digestAlgo, PkAlias pkAlias, RSAPaddingSchemes... sch) throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException;
+    byte[] sign(byte hash[], byte[] pinCode, String digestAlgo, PkAlias pkAlias, RSAPaddingSchemes... sch) throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException, DialogException;
 
     /**
      * Verificação de PIN
@@ -59,8 +61,9 @@ public interface POReIDSmartCard extends SmartCardUIData, AutoCloseable {
      * @throws PinEntryCancelledException Exceção lançada quando o utilizador cancela a introdução do pin
      * @throws PinBlockedException Exceção lançada quando é detetado o bloqueio do pin
      * @throws POReIDException Exceção lançada quando ocorre uma exceção num componente (encapsula a exeção original)
+     * @throws DialogException Exceção lançada quando UI está desativada e é necessária uma interação com o usuário
      */
-    boolean verifyPin(Pin pin, byte[] pinCode) throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException;
+    boolean verifyPin(Pin pin, byte[] pinCode) throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException, DialogException;
 
     /**
      * Modificação de PIN
@@ -68,8 +71,9 @@ public interface POReIDSmartCard extends SmartCardUIData, AutoCloseable {
      * @throws PinBlockedException Exceção lançada quando é detetado o bloqueio do pin
      * @throws PinEntryCancelledException Exceção lançada quando o utilizador cancela a introdução do pin
      * @throws POReIDException Exceção lançada quando ocorre uma exceção num componente (encapsula a exeção original)
+     * @throws DialogException Exceção lançada quando UI está desativada e é necessária uma interação com o usuário
      */
-    void ModifyPin(Pin pin) throws PinBlockedException, PinEntryCancelledException, POReIDException;
+    void ModifyPin(Pin pin) throws PinBlockedException, PinEntryCancelledException, POReIDException, DialogException;
 
     /**
      * Gera um conjuto de 8 bytes aleatórios

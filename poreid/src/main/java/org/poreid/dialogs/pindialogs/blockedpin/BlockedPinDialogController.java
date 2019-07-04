@@ -56,7 +56,10 @@ public class BlockedPinDialogController {
     }
     
   
-    public static BlockedPinDialogController getInstance(String pinLabel, Locale locale){
+    public static BlockedPinDialogController getInstance(String pinLabel, Locale locale) throws BlockedPinDialogException {
+        if (!POReIDConfig.isUserInterfaceEnabled()) {
+            throw new BlockedPinDialogException();
+        }
         return new BlockedPinDialogController(pinLabel, locale);
     }
     

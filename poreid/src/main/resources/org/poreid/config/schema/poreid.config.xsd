@@ -9,6 +9,7 @@
                 <xs:element name="allow-external-pin-caching" type="external-pin-cache"/>
                 <xs:element name="timed-interaction" type="use-timed-interaction"/>
                 <xs:element name="cache-threshold" type="xs:nonNegativeInteger" minOccurs="0" maxOccurs="1"/>
+                <xs:element name="user-interface" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>

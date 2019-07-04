@@ -23,6 +23,8 @@
  */
 package org.poreid.cc;
 
+import org.poreid.dialogs.DialogException;
+import org.poreid.dialogs.pindialogs.otpfeedback.OTPFeedbackDialogException;
 import org.poreid.pcscforjava.CardException;
 import org.poreid.pcscforjava.CommandAPDU;
 import org.poreid.pcscforjava.ResponseAPDU;
@@ -96,7 +98,7 @@ class OTP {
     }
     
     
-    protected void doOTPPinModify() throws POReIDException {
+    protected void doOTPPinModify() throws POReIDException, DialogException, OTPFeedbackDialogException {
         byte[] unlockRequestApdu;
         byte[] cdol2;
 
@@ -128,7 +130,7 @@ class OTP {
     }
     
     
-    private void httpPostDummyRequest() throws POReIDException{
+    private void httpPostDummyRequest() throws POReIDException, DialogException {
         try {
             String post = new JSONObject().put("connect", "").toString();
             HttpsURLConnection con = (HttpsURLConnection) new URL(OTP_CONNECT_URL).openConnection(this.proxy);
@@ -162,7 +164,7 @@ class OTP {
     }
     
     
-    private byte[] httpPostNewPin(PinPafUpdate ppu) throws POReIDException{    
+    private byte[] httpPostNewPin(PinPafUpdate ppu) throws POReIDException, DialogException {
         try {
             HttpsURLConnection con = (HttpsURLConnection) new URL(OTP_SEND_PARAMETERS_URL).openConnection(this.proxy);
             con.setSSLSocketFactory(sslSocketFactory);
@@ -197,7 +199,7 @@ class OTP {
     }
     
     
-    private void httpPostChangeUnlockPINResponse(PinChangeUnlockResponse pcur) throws POReIDException {
+    private void httpPostChangeUnlockPINResponse(PinChangeUnlockResponse pcur) throws POReIDException, DialogException {
         try {
             HttpsURLConnection con = (HttpsURLConnection) new URL(OTP_SEND_CHANGE_PIN_RESPONSE_URL).openConnection(this.proxy);
             con.setSSLSocketFactory(sslSocketFactory);
@@ -228,7 +230,7 @@ class OTP {
     }
     
     
-    private byte[] httpPostResetScriptCounter(OnlineTransactionParameters otp) throws POReIDException{
+    private byte[] httpPostResetScriptCounter(OnlineTransactionParameters otp) throws POReIDException, DialogException {
         try {
             HttpsURLConnection con = (HttpsURLConnection) new URL(OTP_SCRIPT_COUNTER_PARAMETERS_URL).openConnection(this.proxy);
             con.setSSLSocketFactory(sslSocketFactory);
@@ -262,7 +264,7 @@ class OTP {
     }
 
   
-    private void httpPostResetScriptCounterResponse(ResetScriptCounterResponse rscr) throws POReIDException{
+    private void httpPostResetScriptCounterResponse(ResetScriptCounterResponse rscr) throws POReIDException, DialogException {
         try {
             HttpsURLConnection con = (HttpsURLConnection) new URL(OTP_SCRIPT_COUNTER_RESPONSE_URL).openConnection(this.proxy);
             con.setSSLSocketFactory(sslSocketFactory);
@@ -291,7 +293,7 @@ class OTP {
     }
     
     
-    private PinPafUpdate getOTPParameters(byte[] p) throws POReIDException {
+    private PinPafUpdate getOTPParameters(byte[] p) throws POReIDException, DialogException {
         byte[] retbuf;
         PinPafUpdate ppu = new PinPafUpdate();
         
@@ -315,7 +317,7 @@ class OTP {
     }
     
     
-    private OnlineTransactionParameters getOTPOnlineTransactionParameters(byte[] p) throws POReIDException {
+    private OnlineTransactionParameters getOTPOnlineTransactionParameters(byte[] p) throws POReIDException, DialogException {
         byte[] retbuf;
         byte[] otpVerifyPin = new CommandAPDU(0x00, 0x20, 0x00, EMV_PLAIN_TEXT_PIN_PROP, createOTPPinBlock(p)).getBytes();
         OnlineTransactionParameters otp = new OnlineTransactionParameters();
@@ -388,7 +390,7 @@ class OTP {
         return apdu;
     }
     
-    private ResponseAPDU oTPTransmitIgnoreErrors(byte[] apdu) throws POReIDException{
+    private ResponseAPDU oTPTransmitIgnoreErrors(byte[] apdu) throws POReIDException, DialogException {
         ResponseAPDU response = transmit(apdu);
         
         switch(response.getSW()){
@@ -405,7 +407,7 @@ class OTP {
     }
     
     
-    private ResponseAPDU oTPTransmit(byte[] apdu) throws POReIDException{
+    private ResponseAPDU oTPTransmit(byte[] apdu) throws POReIDException, DialogException {
         ResponseAPDU response = transmit(apdu);
         
         if (0x9000 != response.getSW()) {
@@ -416,7 +418,7 @@ class OTP {
     }
     
     
-    private ResponseAPDU transmit(byte[] apdu) throws POReIDException{
+    private ResponseAPDU transmit(byte[] apdu) throws POReIDException, DialogException {
         try {
             return card.getCardSpecificReferences().getCard().getBasicChannel().transmit(new CommandAPDU(apdu),true,true);
         } catch (CardException ex) {
@@ -427,7 +429,7 @@ class OTP {
     }
     
     
-    private void warnCitizen(POReIDException ex) throws POReIDException{
+    private void warnCitizen(POReIDException ex) throws POReIDException, DialogException {
         otpDialogCtl.closeDialog();
         
         DialogController.getInstance(MessageFormat.format(bundle.getString("dialog.otp.error.title"), pin.getLabel()), MessageFormat.format(bundle.getString("dialog.otp.error.message"), 

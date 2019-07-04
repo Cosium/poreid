@@ -242,4 +242,8 @@ public class POReIDConfig {
     public static int getCacheThreshold(){
         return config.getcacheThreshold();
     }
+
+    public static boolean isUserInterfaceEnabled() {
+        return config.isUserInterfaceEnabled();
+    }
 }

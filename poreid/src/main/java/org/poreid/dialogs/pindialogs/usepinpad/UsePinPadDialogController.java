@@ -30,6 +30,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.poreid.Pin;
 import org.poreid.common.Util;
+import org.poreid.config.POReIDConfig;
 
 /**
  *
@@ -55,7 +56,10 @@ public class UsePinPadDialogController {
     }
     
     
-    public static UsePinPadDialogController getInstance(PinOperation operacao, Pin pin, Locale locale){
+    public static UsePinPadDialogController getInstance(PinOperation operacao, Pin pin, Locale locale) throws UsePinPadDialogException {
+        if (!POReIDConfig.isUserInterfaceEnabled()) {
+            throw new UsePinPadDialogException();
+        }
         return new UsePinPadDialogController(operacao, pin, locale);
     }
     

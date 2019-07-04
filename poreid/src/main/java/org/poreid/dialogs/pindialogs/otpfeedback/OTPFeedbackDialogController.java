@@ -27,6 +27,7 @@ import java.util.Locale;
 import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.poreid.common.Util;
+import org.poreid.config.POReIDConfig;
 
 /**
  *
@@ -48,7 +49,10 @@ public class OTPFeedbackDialogController {
     }
     
   
-    public static OTPFeedbackDialogController getInstance(String pinLabel, Locale locale){
+    public static OTPFeedbackDialogController getInstance(String pinLabel, Locale locale) throws OTPFeedbackDialogException {
+        if (!POReIDConfig.isUserInterfaceEnabled()) {
+            throw new OTPFeedbackDialogException();
+        }
         return new OTPFeedbackDialogController(pinLabel, locale);
     }
     

@@ -36,6 +36,7 @@ import java.util.ResourceBundle;
 import org.poreid.CacheStatus;
 import org.poreid.POReIDException;
 import org.poreid.SmartCardFileException;
+import org.poreid.dialogs.DialogException;
 import org.poreid.dialogs.pindialogs.PinBlockedException;
 import org.poreid.dialogs.pindialogs.PinEntryCancelledException;
 import org.poreid.dialogs.pindialogs.PinTimeoutException;
@@ -69,7 +70,7 @@ public abstract class CitizenCard extends POReIDCard implements CitizenData{
                 return ccpa;
             }
             return ccpa = new CitizenCardPhotoAttributes(readFile(getFileDescription().PHOTO));
-        } catch (PinTimeoutException | PinEntryCancelledException | PinBlockedException | POReIDException ex) {
+        } catch (PinTimeoutException | PinEntryCancelledException | PinBlockedException | POReIDException | DialogException ex) {
             throw new SmartCardFileException("Erro durante a leitura da fotografia. Não foi possivel ler os dados.", ex);
         }
     }
@@ -82,14 +83,15 @@ public abstract class CitizenCard extends POReIDCard implements CitizenData{
                 return ccia;
             }
             return ccia = new CitizenCardIdAttributes(readFile(getFileDescription().ID));
-        } catch (PinTimeoutException | PinEntryCancelledException | PinBlockedException | POReIDException ex) {
+        } catch (PinTimeoutException | PinEntryCancelledException | PinBlockedException | POReIDException | DialogException ex) {
             throw new SmartCardFileException("Erro durante a leitura da identificação. Não foi possivel ler os dados.", ex);
         }
     }
 
     
     @Override
-    public final CitizenCardAddressAttributes getAddress() throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException {
+    public final CitizenCardAddressAttributes getAddress()
+            throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException, DialogException {
         if (null != ccaa) {
             return ccaa;
         }
@@ -105,7 +107,7 @@ public abstract class CitizenCard extends POReIDCard implements CitizenData{
                 return notes;
             }
             return notes = readFile(getFileDescription().NOTES);
-        } catch (PinTimeoutException | PinEntryCancelledException | PinBlockedException | POReIDException ex) {
+        } catch (PinTimeoutException | PinEntryCancelledException | PinBlockedException | POReIDException | DialogException ex) {
             throw new SmartCardFileException("Erro durante a leitura das notas pessoais. Não foi possivel ler os dados.", ex);
         }
     }
@@ -118,7 +120,7 @@ public abstract class CitizenCard extends POReIDCard implements CitizenData{
                 return sod;
             }
             return sod = readFile(getFileDescription().SOD);
-        } catch (PinTimeoutException | PinEntryCancelledException | PinBlockedException | POReIDException ex) {
+        } catch (PinTimeoutException | PinEntryCancelledException | PinBlockedException | POReIDException | DialogException ex) {
             throw new SmartCardFileException("Erro durante a leitura do SOD. Não foi possivel ler os dados.", ex);
         }
     }
@@ -170,7 +172,8 @@ public abstract class CitizenCard extends POReIDCard implements CitizenData{
 
     
     @Override
-    public final void savePersonalNotes(String notes) throws SmartCardFileException, PinTimeoutException, POReIDException, PinEntryCancelledException, PinBlockedException {
+    public final void savePersonalNotes(String notes)
+            throws SmartCardFileException, PinTimeoutException, POReIDException, PinEntryCancelledException, PinBlockedException, DialogException {
         byte[] tmp = notes.getBytes(StandardCharsets.UTF_8);
         byte[] notesBytes;
         
@@ -200,7 +203,7 @@ public abstract class CitizenCard extends POReIDCard implements CitizenData{
             KeyFactory factory = KeyFactory.getInstance(CCConfig.RSA);
             pubKey = factory.generatePublic(spec);
             return pubKey;
-        } catch (PinEntryCancelledException | PinBlockedException | POReIDException | PinTimeoutException ex) { 
+        } catch (PinEntryCancelledException | PinBlockedException | POReIDException | PinTimeoutException | DialogException ex) {
             throw new SmartCardFileException("Erro durante a leitura da chave pública. Não foi possivel ler os dados.", ex);
         }
     }
