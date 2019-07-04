@@ -7,7 +7,7 @@
     </parent>
     <groupId>org.poreid</groupId>
     <artifactId>poreid</artifactId>
-    <version>1.54-SNAPSHOT</version>
+    <version>1.57-cosfork</version>
     <packaging>jar</packaging>
     <name>POReID</name>
     <description>The POReID is a java library to handle the portuguese eID smartcard, this library can be used for desktop applications as well as browser based applets</description>
@@ -99,17 +99,15 @@
             </plugin>                        
         </plugins>
     </build>
-    
+
     <distributionManagement>
         <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Nexus Staging Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <id>nexus-cosium-dev-releases</id>
+            <url>https://nexus.cosium.dev/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>            
+            <id>nexus-cosium-dev-snapshots</id>
+            <url>https://nexus.cosium.dev/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     
