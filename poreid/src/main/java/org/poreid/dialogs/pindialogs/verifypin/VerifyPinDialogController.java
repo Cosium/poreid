@@ -32,6 +32,7 @@ import javax.swing.JDialog;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.poreid.Pin;
 import org.poreid.common.Util;
+import org.poreid.config.POReIDConfig;
 import org.poreid.dialogs.DialogEventListener;
 import org.poreid.dialogs.pindialogs.PinEntryCancelledException;
 import org.poreid.dialogs.pindialogs.PinTimeoutException;
@@ -67,7 +68,10 @@ public class VerifyPinDialogController{
     }
     
     
-    public static VerifyPinDialogController getInstance(int timeOut, Pin pin, Locale locale){
+    public static VerifyPinDialogController getInstance(int timeOut, Pin pin, Locale locale) throws VerifyPinDialogException {
+        if (!POReIDConfig.isUserInterfaceEnabled()) {
+            throw new VerifyPinDialogException();
+        }
         return new VerifyPinDialogController(timeOut, pin, locale);
     }
     

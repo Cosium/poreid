@@ -25,6 +25,13 @@
 package org.poreid.cc;
 
 
+import org.poreid.dialogs.DialogException;
+import org.poreid.dialogs.pindialogs.blockedpin.BlockedPinDialogException;
+import org.poreid.dialogs.pindialogs.modifypin.ModifyPinDialogException;
+import org.poreid.dialogs.pindialogs.otpfeedback.OTPFeedbackDialogException;
+import org.poreid.dialogs.pindialogs.usepinpad.UsePinPadDialogException;
+import org.poreid.dialogs.pindialogs.verifypin.VerifyPinDialogException;
+import org.poreid.dialogs.pindialogs.wrongpin.WrongPinDialogException;
 import org.poreid.pcscforjava.Card;
 import org.poreid.pcscforjava.CardChannel;
 import org.poreid.pcscforjava.CardException;
@@ -167,16 +174,26 @@ public abstract class POReIDCard implements POReIDSmartCard {
     
     
     @Override
-    public final boolean verifyPin(Pin pin, byte[] pinCode) throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException {       
+    public final boolean verifyPin(Pin pin, byte[] pinCode) throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException, DialogException {
         if (!CCConfig.isExternalPinCachePermitted() && !otpPinChanging){
             pinCode = null;
         }
-        
-        return internalVerifyPin(pin, pinCode);
+
+        try {
+            return internalVerifyPin(pin, pinCode);
+        } catch (WrongPinDialogException
+                | DialogException
+                | BlockedPinDialogException
+                | VerifyPinDialogException
+                | UsePinPadDialogException e) {
+            throw new DialogException(e);
+        }
     }
     
     
-    private boolean internalVerifyPin(Pin pin, byte[] pinCode) throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException {
+    private boolean internalVerifyPin(Pin pin, byte[] pinCode)
+            throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException, WrongPinDialogException,
+            DialogException, BlockedPinDialogException, VerifyPinDialogException, UsePinPadDialogException {
         ResponseAPDU responseApdu;
         boolean pinOk = false;
         int pinTriesLeft=-1;
@@ -242,7 +259,7 @@ public abstract class POReIDCard implements POReIDSmartCard {
     }
     
     
-    private void checkPinTries(Pin pin, int pinTriesLeft) throws POReIDException, PinBlockedException {
+    private void checkPinTries(Pin pin, int pinTriesLeft) throws POReIDException, PinBlockedException, BlockedPinDialogException {
         PinStatus pinStatus;
         
         if (-1 == pinTriesLeft) {
@@ -259,7 +276,8 @@ public abstract class POReIDCard implements POReIDSmartCard {
     }
     
     
-    private ResponseAPDU resolveReaderPinpadSupportVerifyPin(Pin pin, byte[] pinCode) throws PinEntryCancelledException, PinTimeoutException, POReIDException {
+    private ResponseAPDU resolveReaderPinpadSupportVerifyPin(Pin pin, byte[] pinCode)
+            throws PinEntryCancelledException, PinTimeoutException, POReIDException, VerifyPinDialogException, DialogException, UsePinPadDialogException {
         ResponseAPDU responseApdu;
 
         if (null != pinCode && terminalFeatures.canBypassPinpad()) {
@@ -285,7 +303,7 @@ public abstract class POReIDCard implements POReIDSmartCard {
     }
     
     
-    private ResponseAPDU verifyPinWithPinPad(Pin pin) throws POReIDException {
+    private ResponseAPDU verifyPinWithPinPad(Pin pin) throws POReIDException, UsePinPadDialogException {
         UsePinPadDialogController dialogCtl = UsePinPadDialogController.getInstance(PinOperation.VERIFICACAO, pin, locale);
 
         dialogCtl.displayVerifyPinPinPadDialog();
@@ -297,7 +315,8 @@ public abstract class POReIDCard implements POReIDSmartCard {
     }
     
     
-    private ResponseAPDU verifyPinWithoutPinPad(Pin pin, byte[] pinCode) throws PinEntryCancelledException, PinTimeoutException, POReIDException {
+    private ResponseAPDU verifyPinWithoutPinPad(Pin pin, byte[] pinCode)
+            throws PinEntryCancelledException, PinTimeoutException, POReIDException, DialogException, VerifyPinDialogException {
         byte[] pcode = new byte[8];
         byte[] internal = null;
         ResponseAPDU responseApdu;        
@@ -347,7 +366,7 @@ public abstract class POReIDCard implements POReIDSmartCard {
     }
     
     
-    protected final void writeFile(SmartCardFile file, byte[] data) throws POReIDException, PinEntryCancelledException, PinBlockedException, PinTimeoutException {
+    protected final void writeFile(SmartCardFile file, byte[] data) throws POReIDException, PinEntryCancelledException, PinBlockedException, PinTimeoutException, DialogException {
         boolean writeComplete = false;
 
         try {
@@ -408,11 +427,14 @@ public abstract class POReIDCard implements POReIDSmartCard {
         return files;
     }
 
-    protected final byte[] readFile(SmartCardFile file) throws PinEntryCancelledException, PinBlockedException, POReIDException, PinTimeoutException {
+
+    protected final byte[] readFile(SmartCardFile file)
+            throws PinEntryCancelledException, PinBlockedException, POReIDException, PinTimeoutException, DialogException {
         return readFile(file, null);
     }
 
-    protected final byte[] readFile(SmartCardFile file, byte[] pinCode) throws PinEntryCancelledException, PinBlockedException, POReIDException, PinTimeoutException {
+    protected final byte[] readFile(SmartCardFile file, byte[] pinCode)
+            throws PinEntryCancelledException, PinBlockedException, POReIDException, PinTimeoutException, DialogException {
         String idFileid;
         byte[] contents = null;
         int lenght_sel;
@@ -563,7 +585,12 @@ public abstract class POReIDCard implements POReIDSmartCard {
                 this.certificateFactory = CertificateFactory.getInstance("X.509");
             }
             return (X509Certificate) this.certificateFactory.generateCertificate(new ByteArrayInputStream(readFile(file)));
-        } catch (PinTimeoutException | CertificateException | PinEntryCancelledException | PinBlockedException | POReIDException ex){
+        } catch (PinTimeoutException
+                | CertificateException
+                | PinEntryCancelledException
+                | PinBlockedException
+                | POReIDException
+                | DialogException ex){
             throw new CertificateNotFound("Certificado não encontrado",ex);
         }
     }
@@ -668,23 +695,33 @@ public abstract class POReIDCard implements POReIDSmartCard {
     
     
     @Override
-    public void ModifyPin(Pin pin) throws PinBlockedException, PinEntryCancelledException, POReIDException {
+    public void ModifyPin(Pin pin) throws PinBlockedException, PinEntryCancelledException, POReIDException, DialogException {
         ResponseAPDU responseApdu;
         
-        checkPinTries(pin, -1);
-        
-        try {  
+        try {
+            checkPinTries(pin, -1);
             responseApdu = resolveReaderPinpadSupportModifyPin(pin);
             if (0x9000 != responseApdu.getSW()) {
                 throw new POReIDException("Não foi possível modificar o" + pin.getLabel() + ". Código de estado: " + Integer.toHexString(responseApdu.getSW()));
             }
         } catch (CardException ex) {
             throw new POReIDException("Não foi possivel modificar o "+pin.getLabel(), ex);
-        } catch (PinTimeoutException ignore) { } 
+        } catch (PinTimeoutException ignore) {
+        } catch (ModifyPinDialogException
+                | BlockedPinDialogException
+                | UsePinPadDialogException
+                | WrongPinDialogException
+                | DialogException
+                | VerifyPinDialogException
+                | OTPFeedbackDialogException e) {
+            throw new DialogException(e);
+        }
     }
     
     
-    private ResponseAPDU resolveReaderPinpadSupportModifyPin(Pin pin) throws PinBlockedException, PinEntryCancelledException, PinTimeoutException, CardException, POReIDException {
+    private ResponseAPDU resolveReaderPinpadSupportModifyPin(Pin pin)
+            throws PinBlockedException, PinEntryCancelledException, PinTimeoutException, CardException, POReIDException, DialogException,
+            ModifyPinDialogException, WrongPinDialogException, BlockedPinDialogException, UsePinPadDialogException, VerifyPinDialogException, OTPFeedbackDialogException {
         ResponseAPDU responseApdu;
 
         if (!getCardSpecificReferences().isEMVCAPPin(pin)) {
@@ -717,7 +754,8 @@ public abstract class POReIDCard implements POReIDSmartCard {
     }
     
     
-    private ResponseAPDU modifyPinWithPinPad(Pin pin) throws POReIDException, PinTimeoutException, PinEntryCancelledException, PinBlockedException {
+    private ResponseAPDU modifyPinWithPinPad(Pin pin)
+            throws POReIDException, PinEntryCancelledException, PinBlockedException, BlockedPinDialogException, WrongPinDialogException, UsePinPadDialogException {
         ResponseAPDU responseApdu;
         UsePinPadDialogController modifyDialogCtl = null;
         byte[] verifyApdu = null;
@@ -771,7 +809,9 @@ public abstract class POReIDCard implements POReIDSmartCard {
     }
     
     
-    private ResponseAPDU modifyPinWithoutPinPad(Pin pin) throws PinBlockedException, PinEntryCancelledException, PinTimeoutException, CardException, POReIDException {
+    private ResponseAPDU modifyPinWithoutPinPad(Pin pin)
+            throws PinBlockedException, PinEntryCancelledException, PinTimeoutException, CardException, POReIDException, ModifyPinDialogException, DialogException,
+            VerifyPinDialogException, BlockedPinDialogException, WrongPinDialogException, UsePinPadDialogException, OTPFeedbackDialogException {
         CommandAPDU cApdu;
         ResponseAPDU response;
         boolean pinOk;

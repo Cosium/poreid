@@ -24,6 +24,7 @@
 
 package org.poreid.cc.gemsafe;
 
+import org.poreid.dialogs.DialogException;
 import org.poreid.pcscforjava.Card;
 import org.poreid.pcscforjava.CardChannel;
 import org.poreid.pcscforjava.CardException;
@@ -119,7 +120,8 @@ public final class GemsafeCard extends CitizenCard {
     
     
     @Override
-    public byte[] sign(byte hash[],  byte[] pinCode, String digestAlgo, PkAlias pkAlias, RSAPaddingSchemes... sch) throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException {
+    public byte[] sign(byte hash[],  byte[] pinCode, String digestAlgo, PkAlias pkAlias, RSAPaddingSchemes... sch)
+            throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException, DialogException {
         ResponseAPDU responseApdu;
         CommandAPDU cmd;
         

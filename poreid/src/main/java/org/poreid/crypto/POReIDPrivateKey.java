@@ -31,6 +31,7 @@ import org.poreid.POReIDSmartCard;
 import org.poreid.PkAlias;
 import org.poreid.RSAPaddingSchemes;
 import org.poreid.config.POReIDConfig;
+import org.poreid.dialogs.DialogException;
 import org.poreid.dialogs.pindialogs.PinBlockedException;
 import org.poreid.dialogs.pindialogs.PinEntryCancelledException;
 import org.poreid.dialogs.pindialogs.PinTimeoutException;
@@ -79,7 +80,7 @@ public final class POReIDPrivateKey implements PrivateKey {
         
         try {
             signatureValue = this.eIDCard.sign(digestValue, pin, digestAlgo, pkAlias, paddingScheme);
-        } catch (final PinTimeoutException | PinEntryCancelledException | PinBlockedException | POReIDException ex) {
+        } catch (final PinTimeoutException | PinEntryCancelledException | PinBlockedException | POReIDException | DialogException ex) {
             throw new SignatureException("Erro não foi possivel gerar assinatura.", ex);
         }
         return signatureValue;

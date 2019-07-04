@@ -28,6 +28,7 @@ import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 import org.poreid.POReIDException;
 import org.poreid.SmartCardFileException;
+import org.poreid.dialogs.DialogException;
 import org.poreid.dialogs.pindialogs.PinBlockedException;
 import org.poreid.dialogs.pindialogs.PinEntryCancelledException;
 import org.poreid.dialogs.pindialogs.PinTimeoutException;
@@ -52,8 +53,9 @@ public interface CitizenData {
      * @throws org.poreid.dialogs.pindialogs.PinEntryCancelledException Exceção lançada quando a introdução do PIN é cancelada
      * @throws org.poreid.dialogs.pindialogs.PinBlockedException Exceção lançada quando o PIN está bloqueado
      * @throws org.poreid.POReIDException Exceção genérica do POReID, tipicamente encapsula outra exceção
+     * @throws org.poreid.dialogs.DialogException Exceção lançada quando UI está desativada e é necessária uma interação com o usuário
      */
-    CitizenCardAddressAttributes getAddress() throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException;
+    CitizenCardAddressAttributes getAddress() throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException, DialogException;
 
     /**
      * Retorna o conteúdo do ficheiro da morada
@@ -64,7 +66,7 @@ public interface CitizenData {
      * @throws org.poreid.dialogs.pindialogs.PinBlockedException Exceção lançada quando o PIN está bloqueado
      * @throws org.poreid.POReIDException Exceção genérica do POReID, tipicamente encapsula outra exceção
      */
-    CitizenCardAddressAttributes getAddress(byte[] addressPinCode) throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException;
+    CitizenCardAddressAttributes getAddress(byte[] addressPinCode) throws PinTimeoutException, PinEntryCancelledException, PinBlockedException, POReIDException, DialogException;
 
     /**
      * Retorna o conteúdo do ficheiro das notas pessoais
@@ -95,8 +97,9 @@ public interface CitizenData {
      * @throws org.poreid.POReIDException Exceção genérica do POReID, tipicamente encapsula outra exceção
      * @throws org.poreid.dialogs.pindialogs.PinEntryCancelledException Exceção lançada quando a introdução do PIN é cancelada
      * @throws org.poreid.dialogs.pindialogs.PinBlockedException Exceção lançada quando o PIN está bloqueado
+     * @throws org.poreid.dialogs.DialogException Exceção lançada quando UI está desativada e é necessária uma interação com o usuário
      */
-    void savePersonalNotes(String notes) throws SmartCardFileException, PinTimeoutException, POReIDException, PinEntryCancelledException, PinBlockedException;
+    void savePersonalNotes(String notes) throws SmartCardFileException, PinTimeoutException, POReIDException, PinEntryCancelledException, PinBlockedException, DialogException;
     
     
     /**

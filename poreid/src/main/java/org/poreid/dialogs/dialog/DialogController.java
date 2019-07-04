@@ -34,6 +34,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.poreid.common.Util;
 import org.poreid.config.POReIDConfig;
 import org.poreid.dialogs.DialogEventListener;
+import org.poreid.dialogs.DialogException;
 
 /**
  *
@@ -61,7 +62,10 @@ public class DialogController {
     }
     
   
-    public static DialogController getInstance(String title, String message, Locale locale, boolean error){
+    public static DialogController getInstance(String title, String message, Locale locale, boolean error) throws DialogException {
+        if (!POReIDConfig.isUserInterfaceEnabled()) {
+            throw new DialogException(message);
+        }
         return new DialogController(title, message, locale, error);
     }
     

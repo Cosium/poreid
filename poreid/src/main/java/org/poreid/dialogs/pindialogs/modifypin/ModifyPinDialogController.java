@@ -29,6 +29,7 @@ import java.util.Locale;
 import javax.swing.SwingUtilities;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.poreid.common.Util;
+import org.poreid.config.POReIDConfig;
 import org.poreid.dialogs.DialogEventListener;
 import org.poreid.dialogs.pindialogs.PinEntryCancelledException;
 
@@ -58,7 +59,10 @@ public class ModifyPinDialogController {
     }
     
     
-    public static ModifyPinDialogController getInstance(String pinLabel, int pinMinLength, int pinMaxLength, Locale locale){
+    public static ModifyPinDialogController getInstance(String pinLabel, int pinMinLength, int pinMaxLength, Locale locale) throws ModifyPinDialogException {
+        if (!POReIDConfig.isUserInterfaceEnabled()) {
+            throw new ModifyPinDialogException(pinMinLength, pinMaxLength);
+        }
         return new ModifyPinDialogController(pinLabel, pinMinLength, pinMaxLength, locale);
     }
     

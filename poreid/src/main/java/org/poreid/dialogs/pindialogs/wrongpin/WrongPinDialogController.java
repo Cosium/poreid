@@ -60,7 +60,10 @@ public class WrongPinDialogController {
     }
     
   
-    public static WrongPinDialogController getInstance(String pinLabel, int pinTriesLeft, Locale locale){
+    public static WrongPinDialogController getInstance(String pinLabel, int pinTriesLeft, Locale locale) throws WrongPinDialogException {
+        if (!POReIDConfig.isUserInterfaceEnabled()) {
+            throw new WrongPinDialogException(pinTriesLeft);
+        }
         return new WrongPinDialogController(pinLabel, pinTriesLeft, locale);
     }
     
