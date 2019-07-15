@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.poreid</groupId>
     <artifactId>poreid</artifactId>
-    <version>1.57.0.cosium</version>
+    <version>1.57.1.cosium-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>POReID</name>
     <description>The POReID is a java library to handle the portuguese eID smartcard, this library can be used for desktop applications as well as browser based applets</description>
@@ -28,7 +28,7 @@
         <connection>scm:git:git@github.com:Cosium/poreid.git</connection>
         <developerConnection>scm:git:git@github.com:Cosium/poreid.git</developerConnection>
         <url>https://github.com/Cosium/poreid</url>
-      <tag>poreid-1.57.0.cosium</tag>
+      <tag>HEAD</tag>
   </scm>
     <build>
         <plugins>
