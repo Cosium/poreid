@@ -67,14 +67,6 @@ public class POReIDSecurityManager extends SecurityManager {
 
     
     @Override
-    public void checkMemberAccess(final Class<?> clazz, final int which) {
-        if (null!= securityManager){
-            securityManager.checkMemberAccess(clazz, which);
-        }
-    }
-
-    
-    @Override
     public void checkPackageDefinition(final String pkg) {
         super.checkPackageDefinition(pkg);
         if (pkg != null && pkg.startsWith("por.eid")) {
@@ -109,14 +101,6 @@ public class POReIDSecurityManager extends SecurityManager {
         super.checkAccess(g);
         if (null != securityManager) {
             securityManager.checkAccess(g);
-        }
-    }
-
-    
-    @Override
-    public void checkAwtEventQueueAccess() {
-        if (null != securityManager) {
-            securityManager.checkAwtEventQueueAccess();
         }
     }
 
@@ -279,24 +263,6 @@ public class POReIDSecurityManager extends SecurityManager {
         if (null != securityManager) {
             securityManager.checkSetFactory();
         }
-    }
-
-    
-    @Override
-    public void checkSystemClipboardAccess() {
-        if (null != securityManager) {
-            securityManager.checkSystemClipboardAccess();
-        }
-    }
-
-    
-    @Override
-    public boolean checkTopLevelWindow(final Object window) {      
-        if (null != securityManager) {
-            return securityManager.checkTopLevelWindow(window);
-        }
-        
-        return false;
     }
 
     

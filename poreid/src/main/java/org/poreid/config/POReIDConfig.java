@@ -29,9 +29,9 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.XMLConstants;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import org.poreid.CacheStatus;
@@ -82,7 +82,7 @@ public class POReIDConfig {
             JAXBContext jaxbContext = JAXBContext.newInstance(Configuration.class);
             Unmarshaller u = jaxbContext.createUnmarshaller();
             u.setSchema(schema);
-            u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+            u.setEventHandler(new jakarta.xml.bind.helpers.DefaultValidationEventHandler());
             config = (Configuration) u.unmarshal(POReIDConfig.class.getResource(CONFIGURACAO));
             if (configurationOverrider != null) {
                 configurationOverrider.override(config);
